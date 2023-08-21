@@ -2,11 +2,12 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { RemindmeController } from './remindme/remindme.controller';
-import { TwilioService } from './twilio/twilio.service';
 import { ConfigModule } from '@nestjs/config';
+import { RemindmeModule } from './remindme/remindme.module';
+import { TwilioService } from './twilio/twilio.service';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true })],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), RemindmeModule],
   controllers: [AppController, RemindmeController],
   providers: [AppService, TwilioService],
 })
