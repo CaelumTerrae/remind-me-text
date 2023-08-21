@@ -12,18 +12,24 @@ describe('TimeparserService', () => {
     }).compile();
 
     service = module.get<TimeparserService>(TimeparserService);
+    // mock now to make sure that time changing doesn't change anything
+    jest.spyOn(global.Date, 'now').mockImplementation(() => now_in_ms);
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  it('should properly handle relative dates in  days', () => {
-    // mock now to make sure that time changing doesn't change anything
-    jest.spyOn(global.Date, 'now').mockImplementation(() => now_in_ms);
+  it('should handle relative days', () => {
     const one_day_from_now_from_service = service.convertToTimeDelta('1 Day');
     const one_day_from_now_calculated = addDays(now, 1);
     expect(one_day_from_now_from_service.getMilliseconds()).toEqual(
+      one_day_from_now_calculated.getMilliseconds(),
+    );
+
+    const one_day_from_now_verbose_from_service =
+      service.convertToTimeDelta('1 day from now');
+    expect(one_day_from_now_verbose_from_service.getMilliseconds()).toEqual(
       one_day_from_now_calculated.getMilliseconds(),
     );
 
@@ -48,10 +54,64 @@ describe('TimeparserService', () => {
       one_hundred_days_from_now_calculated.getMilliseconds(),
     );
   });
+
+  it('should handle adhoc relative time words', () => {
+    const tomorrow_service = service.convertToTimeDelta('tomorrow');
+    const tomorrow_calculated = addDays(now, 1);
+    expect(tomorrow_service.getMilliseconds()).toEqual(
+      tomorrow_calculated.getMilliseconds(),
+    );
+
+    const next_week_service = service.convertToTimeDelta('next week');
+    const next_week_calculated = addDays(now, 7);
+    expect(next_week_service.getMilliseconds()).toEqual(
+      next_week_calculated.getMilliseconds(),
+    );
+
+    const next_year_service = service.convertToTimeDelta('next year');
+    const next_year_calculated = addYears(now, 1);
+    expect(next_year_service.getMilliseconds()).toEqual(
+      next_year_calculated.getMilliseconds(),
+    );
+  });
+
+  it('should handle relative weeks', () => {
+    const one_week_from_now_service = service.convertToTimeDelta('1 week');
+    const one_week_from_now_calculated = addDays(now, 7);
+    expect(one_week_from_now_service.getMilliseconds()).toEqual(
+      one_week_from_now_calculated.getMilliseconds(),
+    );
+
+    const one_week_from_now_service_verbose =
+      service.convertToTimeDelta('a week from now');
+    expect(one_week_from_now_service_verbose.getMilliseconds()).toEqual(
+      one_week_from_now_calculated.getMilliseconds(),
+    );
+  });
+
+  it('should handle relative years', () => {
+    const one_year_from_now_service = service.convertToTimeDelta('1 year');
+    const one_year_from_now_calculated = addYears(now, 1);
+    expect(one_year_from_now_service.getMilliseconds()).toEqual(
+      one_year_from_now_calculated.getMilliseconds(),
+    );
+
+    const two_years_from_now_service = service.convertToTimeDelta('1 year');
+    const two_years_from_now_calculated = addYears(now, 2);
+    expect(two_years_from_now_service.getMilliseconds()).toEqual(
+      two_years_from_now_calculated.getMilliseconds(),
+    );
+  });
 });
 
 const addDays = (date: Date, days: number) => {
   const result = new Date(date);
   result.setDate(result.getDate() + days);
+  return result;
+};
+
+const addYears = (date: Date, years: number) => {
+  const result = new Date(date);
+  result.setFullYear(result.getFullYear() + years);
   return result;
 };
