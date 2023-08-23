@@ -1,15 +1,13 @@
-import { Controller, Get, Post, Param } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body } from '@nestjs/common';
+import { TimeparserService } from 'src/timeparser/timeparser.service';
 import { TwilioService } from 'src/twilio/twilio.service';
-import MessagingResponse from 'twilio/lib/twiml/MessagingResponse';
 
 @Controller('remindme')
 export class RemindmeController {
-  constructor(private twilioService: TwilioService) {}
-
-  // @Get(':deltaString')
-  // generalRemindmeGet(@Param('deltaString') deltaString: string): string {
-  //   return `This will return the query string ${deltaString} back to the user`;
-  // }
+  constructor(
+    private twilioService: TwilioService,
+    private timeParserService: TimeparserService,
+  ) {}
 
   @Get('/deliver/:bounceString')
   async generalBounceGet(
@@ -21,12 +19,12 @@ export class RemindmeController {
   }
 
   @Post('/receivesms')
-  async recieveSMSPost(): Promise<void> {
-    console.log('received a message from the server');
-    const twiml = new MessagingResponse();
-
-    twiml.message("Heard, we'll remind you then!");
-
-    return twiml.toString();
+  async recieveSMSPost(@Body('Body') text_response: string): Promise<string> {
+    console.log(text_response);
+    return this.twilioService.generateTwiMLResponse(
+      `Heard, we'll remind you  \'${text_response}\' at ${this.timeParserService.convertToRoughString(
+        new Date(Date.now()),
+      )}!`,
+    );
   }
 }

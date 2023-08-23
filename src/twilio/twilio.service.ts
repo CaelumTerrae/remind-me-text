@@ -44,6 +44,10 @@ export class TwilioService {
     });
     return result;
   }
+
+  generateTwiMLResponse(message: string) {
+    return `<?xml version="1.0" encoding="UTF-8"?><Response><Message>${message}</Message></Response>`;
+  }
 }
 
 interface TwilioServiceConfig {
