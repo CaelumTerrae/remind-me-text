@@ -5,6 +5,15 @@ import * as chrono from 'chrono-node';
 export class TimeparserService {
   constructor() {}
 
+  doesStringHaveATimeDelta(date_string: string): boolean {
+    const now_as_reference_date = new Date(Date.now());
+    return (
+      chrono.parseDate(date_string, now_as_reference_date, {
+        forwardDate: true,
+      }) != null
+    );
+  }
+
   convertToTimeDelta(date_string: string): Date {
     const now_as_reference_date = new Date(Date.now());
     return chrono.parseDate(date_string, now_as_reference_date, {

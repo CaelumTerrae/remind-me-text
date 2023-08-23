@@ -102,6 +102,30 @@ describe('TimeparserService', () => {
       two_years_from_now_calculated.getMilliseconds(),
     );
   });
+
+  it('should identify messages with dates', () => {
+    expect(
+      service.doesStringHaveATimeDelta(
+        'hey dude do you have a thingy by any chance',
+      ),
+    ).toEqual(false);
+
+    expect(service.doesStringHaveATimeDelta('this isnt a date')).toEqual(false);
+  });
+
+  it('should identify messages without dates', () => {
+    expect(
+      service.doesStringHaveATimeDelta(
+        'this is a lot of other words and 1 year from now',
+      ),
+    ).toEqual(true);
+
+    expect(
+      service.doesStringHaveATimeDelta(
+        'a lot of words in a diff order and 15 days',
+      ),
+    ).toEqual(true);
+  });
 });
 
 const addDays = (date: Date, days: number) => {
