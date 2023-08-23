@@ -31,17 +31,18 @@ export class TwilioService {
 
   create() {}
 
-  sendDefaultMessage() {
+  async sendDefaultMessage() {
     if (this.client === null) {
       throw new Error(
         'Twilio Service cannot send message before the client is properly initialized',
       );
     }
-    this.client.messages.create({
+    const result = await this.client.messages.create({
       body: 'This is a default message',
       from: this.config.test_number,
       to: this.test_hardcoded_number_to_send_to,
     });
+    return result;
   }
 }
 

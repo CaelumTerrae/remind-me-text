@@ -1,5 +1,6 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Post, Param } from '@nestjs/common';
 import { TwilioService } from 'src/twilio/twilio.service';
+import MessagingResponse from 'twilio/lib/twiml/MessagingResponse';
 
 @Controller('remindme')
 export class RemindmeController {
@@ -10,10 +11,22 @@ export class RemindmeController {
   //   return `This will return the query string ${deltaString} back to the user`;
   // }
 
-  @Get(':bounceString')
-  generalBounceGet(@Param('bounceString') bounceString: string): string {
+  @Get('/deliver/:bounceString')
+  async generalBounceGet(
+    @Param('bounceString') bounceString: string,
+  ): Promise<string> {
     console.log(bounceString);
-    this.twilioService.sendDefaultMessage();
-    return 'this is gonna bounce the string through twilio to the user when the get request is made.';
+    const result = await this.twilioService.sendDefaultMessage();
+    return JSON.stringify(result);
+  }
+
+  @Post('/receivesms')
+  async recieveSMSPost(): Promise<void> {
+    console.log('received a message from the server');
+    const twiml = new MessagingResponse();
+
+    twiml.message("Heard, we'll remind you then!");
+
+    return twiml.toString();
   }
 }
