@@ -22,9 +22,11 @@ export class RemindmeController {
   async recieveSMSPost(@Body('Body') text_response: string): Promise<string> {
     console.log(text_response);
     return this.twilioService.generateTwiMLResponse(
-      `Heard, we'll remind you  \'${text_response}\' at ${this.timeParserService.convertToRoughString(
-        new Date(Date.now()),
-      )}!`,
+      "Heard, we'll remind you  '" +
+        text_response +
+        "' at " +
+        this.timeParserService.convertToRoughString(new Date(Date.now())) +
+        '!',
     );
   }
 }

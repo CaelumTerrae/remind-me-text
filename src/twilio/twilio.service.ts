@@ -34,7 +34,8 @@ export class TwilioService {
   async sendDefaultMessage() {
     if (this.client === null) {
       throw new Error(
-        'Twilio Service cannot send message before the client is properly initialized',
+        'Twilio Service cannot send message ' +
+          'before the client is properly initialized',
       );
     }
     const result = await this.client.messages.create({
@@ -46,7 +47,12 @@ export class TwilioService {
   }
 
   generateTwiMLResponse(message: string) {
-    return `<?xml version="1.0" encoding="UTF-8"?><Response><Message>${message}</Message></Response>`;
+    return `<?xml version="1.0" encoding="UTF-8"?>
+      <Response>
+        <Message>
+          ${message}
+        </Message>
+      </Response>`;
   }
 }
 

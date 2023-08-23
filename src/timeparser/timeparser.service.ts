@@ -19,6 +19,18 @@ export class TimeparserService {
     }
     const timeOfDayModifier = date.getHours() < 12 ? 'AM' : 'PM';
 
-    return `${hoursAfterFormatting}:${date.getMinutes()} ${timeOfDayModifier} on ${date.getMonth()}/${date.getDate()}/${date.getFullYear()} `;
+    return (
+      hoursAfterFormatting +
+      ':' +
+      date.getMinutes() +
+      ' ' +
+      timeOfDayModifier +
+      ' on ' +
+      date.getMonth() +
+      '/' +
+      date.getDate() +
+      '/' +
+      date.getFullYear()
+    );
   }
 }
