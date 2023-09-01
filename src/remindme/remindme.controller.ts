@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Param, Body } from '@nestjs/common';
+import { ReminderService } from 'src/entities/reminder/reminder.service';
 import { TimeparserService } from 'src/timeparser/timeparser.service';
 import { TwilioService } from 'src/twilio/twilio.service';
 
@@ -7,6 +8,7 @@ export class RemindmeController {
   constructor(
     private twilioService: TwilioService,
     private timeParserService: TimeparserService,
+    private reminderService: ReminderService,
   ) {}
 
   @Get('/deliver/:bounceString')
@@ -15,6 +17,8 @@ export class RemindmeController {
   ): Promise<string> {
     console.log(bounceString);
     const result = await this.twilioService.sendDefaultMessage();
+    console.log('going to write a random string row in the db');
+    this.reminderService.create();
     return JSON.stringify(result);
   }
 
